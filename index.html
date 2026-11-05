@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101319">
+<title>TUNE — Sarimoko Tuner</title>
+<style>
+:root{color-scheme:dark;--bg:#101319;--panel:#191f28;--panel2:#202834;--line:#303b49;--text:#eef3f7;--muted:#9baaba;--teal:#54d6c4;--green:#8ee0a1;--red:#ff7777;--amber:#f1c879}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#253443 0,transparent 48%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{width:min(980px,calc(100% - 32px));margin:0 auto;padding:28px 0 54px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}.brand{display:flex;align-items:center;gap:12px}.mark{width:42px;height:42px;border:1px solid #397d79;border-radius:13px;display:grid;place-items:center;color:var(--teal);font-size:22px;background:#142b2c}.brand strong{letter-spacing:.18em;font-size:18px}.brand small{display:block;color:var(--muted);letter-spacing:.08em;font-size:10px;text-transform:uppercase}
+.pill{border:1px solid var(--line);border-radius:99px;padding:6px 11px;color:var(--muted);font-size:12px}
+h1{font-size:clamp(27px,5vw,40px);line-height:1.08;letter-spacing:-.04em;margin:0 0 8px} .intro{color:var(--muted);margin:0 0 24px}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.panel{background:linear-gradient(145deg,#1b232d,#161c24);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 12px 36px #0002}.panel h2{font-size:13px;text-transform:uppercase;letter-spacing:.13em;color:#b7c5d2;margin:0 0 15px}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:12px;color:var(--muted)}select,input[type=number],input[type=text]{width:100%;background:#111720;border:1px solid #344151;color:var(--text);border-radius:10px;padding:11px 12px;font:inherit;outline:none}select:focus,input:focus{border-color:var(--teal)}
+button{border:0;border-radius:10px;background:var(--teal);color:#08211f;font-weight:750;padding:11px 16px;cursor:pointer;font:inherit}button.secondary{background:#273441;color:var(--text);border:1px solid #3a4857}button:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;margin-top:12px}.dot{width:8px;height:8px;border-radius:50%;background:#687584}.dot.live{background:var(--green);box-shadow:0 0 12px #8ee0a188}
+.tuner{min-height:350px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}.tuner:before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:#54d6c408;filter:blur(25px)}
+.note{font-size:clamp(64px,11vw,104px);font-weight:750;letter-spacing:-.07em;line-height:1;z-index:1}.frequency{font-size:18px;color:var(--teal);font-variant-numeric:tabular-nums;margin-top:7px;z-index:1}.notehint{color:var(--muted);font-size:12px;margin-top:3px;z-index:1}
+.meter{width:min(100%,420px);margin:27px auto 0;z-index:1}.scale{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-bottom:8px}.track{height:12px;background:linear-gradient(90deg,#b85b5b 0%,#c9a65e 30%,#5d6974 48%,#5d6974 52%,#c9a65e 70%,#b85b5b 100%);border-radius:20px;position:relative}.centerline{position:absolute;left:50%;top:-5px;height:22px;width:2px;background:#fff9}.needle{position:absolute;left:50%;top:-8px;width:4px;height:28px;border-radius:5px;background:#fff;transform:translateX(-50%);box-shadow:0 0 10px #fff9;transition:left .08s linear}.cents{font-size:13px;color:var(--muted);margin-top:12px;font-variant-numeric:tabular-nums}
+.stringrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.string{flex:1;min-width:52px;background:#111720;border:1px solid var(--line);border-radius:10px;padding:9px 5px;text-align:center;color:var(--muted);font-size:12px}.string b{display:block;color:var(--text);font-size:17px}.string.active{border-color:var(--teal);background:#17302f;color:var(--teal)}
+.help{margin-top:16px}.help p{color:var(--muted);font-size:13px;margin:8px 0}.help strong{color:var(--text)}.help ul{padding-left:18px;color:var(--muted);font-size:13px;margin:8px 0}.help li{margin:5px 0}
+.footer{margin-top:24px;text-align:center;color:#738191;font-size:12px}.tag{display:inline-block;color:var(--teal);border:1px solid #28514e;border-radius:6px;padding:2px 7px;font-size:10px;letter-spacing:.08em;margin-left:6px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.tuner{min-height:310px}.controls{grid-template-columns:1fr 1fr}.panel{padding:16px}}
+@media(max-width:420px){.controls{grid-template-columns:1fr}.field.full{grid-column:auto}.wrap{width:calc(100% - 22px);padding-top:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="brand"><div class="mark">♩</div><div><strong>SARIMOKO</strong><small>tools for making things</small></div></div><span class="pill">TUNE <span class="tag">BETA</span></span></header>
+<h1>Find your pitch.</h1><p class="intro">A clean, browser-based instrument tuner. Choose your input, pick a tuning, and bring the needle to center.</p>
+<div class="grid">
+<section class="panel">
+<h2>Input & tuning</h2>
+<div class="controls">
+<div class="field full"><label for="device">Audio input</label><select id="device"><option value="">Default microphone</option></select></div>
+<div class="field"><label for="layout">Tuning layout</label><select id="layout"><option value="chromatic">Chromatic</option><option value="guitar">Guitar · Standard</option><option value="bass">Bass · 4-string</option><option value="uke">Ukulele · Standard</option></select></div>
+<div class="field"><label for="reference">Reference pitch (A4)</label><div style="display:flex;gap:7px"><input id="reference" type="number" min="300" max="500" step="0.1" value="440"><span style="align-self:center;color:var(--muted)">Hz</span></div></div>
+<div class="field full" id="customWrap" hidden><label for="custom">Custom reference (Hz)</label><input id="custom" type="number" min="300" max="500" step="0.1" value="440"></div>
+</div>
+<div class="actions"><button id="start">Start tuner</button><button id="stop" class="secondary" disabled>Stop</button><button id="refresh" class="secondary">Refresh inputs</button></div>
+<div class="status"><span id="dot" class="dot"></span><span id="status">Waiting for microphone permission.</span></div>
+<div class="help">
+<h2 style="margin-top:20px">Which audio input should I use?</h2>
+<p><strong>Built-in microphone</strong> — easiest option. Select your MacBook, laptop, or phone microphone. Place the instrument reasonably close and reduce background noise.</p>
+<p><strong>USB audio interface</strong> — best for electric guitar or bass. Connect the instrument to the interface's instrument/Hi-Z input, select the interface here, and set its input gain so the signal is healthy without clipping.</p>
+<ul><li>For acoustic instruments, use the built-in mic or an external microphone.</li><li>For an electric instrument, use a direct interface input; do not select system output or a speaker loopback.</li><li>Allow microphone access when your browser asks. Headphones help prevent speaker feedback.</li></ul>
+<p>On macOS, check <strong>System Settings → Privacy & Security → Microphone</strong> if the browser cannot access an input. On Windows, check <strong>Settings → Privacy & security → Microphone</strong>.</p>
+</div>
+</section>
+<section class="panel tuner">
+<div class="note" id="note">—</div><div class="frequency" id="freq">--.- Hz</div><div class="notehint" id="hint">Play a single note</div>
+<div class="meter"><div class="scale"><span>♭ Flat</span><span>In tune</span><span>Sharp ♯</span></div><div class="track"><div class="centerline"></div><div class="needle" id="needle"></div></div><div class="cents" id="cents">0 cents</div></div>
+<div class="stringrow" id="strings"></div>
+</section>
+</div>
+<div class="footer">TUNE is a Sarimoko browser tool · Audio is processed locally in your browser.</div>
+</div>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const presets = {
+  chromatic: [],
+  guitar: [{name:"E2",midi:40},{name:"A2",midi:45},{name:"D3",midi:50},{name:"G3",midi:55},{name:"B3",midi:59},{name:"E4",midi:64}],
+  bass: [{name:"E1",midi:28},{name:"A1",midi:33},{name:"D2",midi:38},{name:"G2",midi:43}],
+  uke: [{name:"G4",midi:67},{name:"C4",midi:60},{name:"E4",midi:64},{name:"A4",midi:69}]
+};
+let audioContext=null,stream=null,source=null,analyser=null,raf=null,buffer=null,devices=[];
+const names=["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
+function currentRef(){return Math.max(300,Math.min(500,Number($("reference").value)||440))}
+function midiFreq(midi){return currentRef()*Math.pow(2,(midi-69)/12)}
+function renderStrings(){
+ const arr=presets[$("layout").value]; $("strings").innerHTML="";
+ if(!arr.length)return;
+ arr.forEach(s=>{const el=document.createElement("div");el.className="string";el.innerHTML=`<b>${s.name}</b>${midiFreq(s.midi).toFixed(1)} Hz`;$("strings").appendChild(el)});
+}
+function setStatus(text,live=false){$("status").textContent=text;$("dot").classList.toggle("live",live)}
+async function refreshDevices(){
+ try{
+  const all=await navigator.mediaDevices.enumerateDevices();devices=all.filter(d=>d.kind==="audioinput");
+  const sel=$("device"),old=sel.value;sel.innerHTML="";
+  const def=document.createElement("option");def.value="";def.textContent="Default microphone";sel.appendChild(def);
+  devices.forEach((d,i)=>{const o=document.createElement("option");o.value=d.deviceId;o.textContent=d.label||`Audio input ${i+1}`;sel.appendChild(o)});
+  if(devices.some(d=>d.deviceId===old))sel.value=old;
+  if(!devices.length)setStatus("No audio inputs detected.");
+ }catch(e){setStatus("Could not list audio inputs. Check browser permissions.");}
+}
+function stop(){
+ if(raf)cancelAnimationFrame(raf);raf=null;
+ if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;
+ if(audioContext){audioContext.close();audioContext=null}
+ source=analyser=buffer=null;$("start").disabled=false;$("stop").disabled=true;
+ $("note").textContent="—";$("freq").textContent="--.- Hz";$("hint").textContent="Play a single note";$("cents").textContent="0 cents";$("needle").style.left="50%";setStatus("Tuner stopped.");
+}
+async function start(){
+ stop();
+ if(!navigator.mediaDevices?.getUserMedia){setStatus("Microphone access requires HTTPS or localhost.");return}
+ try{
+  const constraints={audio:{deviceId:$("device").value?{exact:$("device").value}:undefined,echoCancellation:false,noiseSuppression:false,autoGainControl:false}};
+  stream=await navigator.mediaDevices.getUserMedia(constraints);
+  await refreshDevices();
+  audioContext=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioContext.state==="suspended")await audioContext.resume();
+  source=audioContext.createMediaStreamSource(stream);analyser=audioContext.createAnalyser();analyser.fftSize=8192;analyser.smoothingTimeConstant=0;
+  source.connect(analyser);buffer=new Float32Array(analyser.fftSize);
+  $("start").disabled=true;$("stop").disabled=false;setStatus("Listening — play one note at a time.",true);loop();
+ }catch(e){stop();setStatus(e.name==="NotAllowedError"?"Microphone permission denied. Allow access in browser settings.":`Could not start audio: ${e.message}`)}
+}
+function autoCorrelate(buf,sr){
+ let rms=0;for(let i=0;i<buf.length;i++)rms+=buf[i]*buf[i];rms=Math.sqrt(rms/buf.length);
+ if(rms<0.012)return -1;
+ let r1=0,r2=buf.length-1,thres=0.2;
+ for(let i=0;i<buf.length/2;i++){if(Math.abs(buf[i])<thres){r1=i;break}}
+ for(let i=1;i<buf.length/2;i++){if(Math.abs(buf[buf.length-i])<thres){r2=buf.length-i;break}}
+ const slice=buf.slice(r1,r2);const c=new Float32Array(slice.length);
+ for(let lag=0;lag<c.length;lag++){let sum=0;for(let i=0;i<c.length-lag;i++)sum+=slice[i]*slice[i+lag];c[lag]=sum}
+ let d=0;while(d+1<c.length&&c[d]>c[d+1])d++;
+ let max=-1,period=-1;for(let i=d;i<c.length;i++){if(c[i]>max){max=c[i];period=i}}
+ if(period<2)return -1;
+ let x1=c[period-1],x2=c[period],x3=c[period+1];
+ let a=(x1+x3-2*x2)/2,b=(x3-x1)/2;
+ if(a)period-=b/(2*a);
+ const hz=sr/period;return hz>25&&hz<1500?hz:-1;
+}
+function loop(){
+ analyser.getFloatTimeDomainData(buffer);const hz=autoCorrelate(buffer,audioContext.sampleRate);
+ if(hz>0)showPitch(hz);else{$("hint").textContent="Listening… play a clear, sustained note";$("freq").textContent="--.- Hz"}
+ raf=requestAnimationFrame(loop);
+}
+function showPitch(hz){
+ const midiFloat=69+12*Math.log2(hz/currentRef()),midi=Math.round(midiFloat),cents=(midiFloat-midi)*100;
+ const note=names[(midi%12+12)%12]+(Math.floor(midi/12)-1);
+ const target=midiFreq(midi),delta=1200*Math.log2(hz/target);
+ $("note").textContent=note;$("freq").textContent=hz.toFixed(1)+" Hz";
+ $("hint").textContent=Math.abs(cents)<5?"In tune":cents<0?"Tune up":"Tune down";
+ $("cents").textContent=(cents>0?"+":"")+cents.toFixed(1)+" cents";
+ $("needle").style.left=(50+Math.max(-50,Math.min(50,cents))*0.9)+"%";
+ const arr=presets[$("layout").value];
+ document.querySelectorAll(".string").forEach((el,i)=>el.classList.toggle("active",arr[i]&&arr[i].midi===midi));
+}
+$("start").addEventListener("click",start);$("stop").addEventListener("click",stop);
+$("refresh").addEventListener("click",refreshDevices);
+$("layout").addEventListener("change",renderStrings);
+$("reference").addEventListener("input",()=>{renderStrings()});
+$("device").addEventListener("change",()=>{if(stream)start()});
+$("custom").addEventListener("input",()=>{$("reference").value=$("custom").value;renderStrings()});
+renderStrings();refreshDevices();
+if(location.protocol!=="https:"&&location.hostname!=="localhost"&&location.hostname!=="127.0.0.1")setStatus("Ready. GitHub Pages provides secure HTTPS microphone access.");
+})();
+</script>
+</body>
+</html>
