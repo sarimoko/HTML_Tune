@@ -4,148 +4,228 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101319">
-<title>TUNE — Sarimoko Tuner</title>
+<title>TUNE — Sarimoko Advanced Tuner</title>
 <style>
-:root{color-scheme:dark;--bg:#101319;--panel:#191f28;--panel2:#202834;--line:#303b49;--text:#eef3f7;--muted:#9baaba;--teal:#54d6c4;--green:#8ee0a1;--red:#ff7777;--amber:#f1c879}
+:root{color-scheme:dark;--bg:#101319;--panel:#191f28;--line:#303b49;--text:#eef3f7;--muted:#9baaba;--teal:#54d6c4;--green:#8ee0a1;--red:#ff7777;--amber:#f1c879}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#253443 0,transparent 48%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.wrap{width:min(980px,calc(100% - 32px));margin:0 auto;padding:28px 0 54px}
-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}.brand{display:flex;align-items:center;gap:12px}.mark{width:42px;height:42px;border:1px solid #397d79;border-radius:13px;display:grid;place-items:center;color:var(--teal);font-size:22px;background:#142b2c}.brand strong{letter-spacing:.18em;font-size:18px}.brand small{display:block;color:var(--muted);letter-spacing:.08em;font-size:10px;text-transform:uppercase}
-.pill{border:1px solid var(--line);border-radius:99px;padding:6px 11px;color:var(--muted);font-size:12px}
-h1{font-size:clamp(27px,5vw,40px);line-height:1.08;letter-spacing:-.04em;margin:0 0 8px} .intro{color:var(--muted);margin:0 0 24px}
-.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.panel{background:linear-gradient(145deg,#1b232d,#161c24);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 12px 36px #0002}.panel h2{font-size:13px;text-transform:uppercase;letter-spacing:.13em;color:#b7c5d2;margin:0 0 15px}
-.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:12px;color:var(--muted)}select,input[type=number],input[type=text]{width:100%;background:#111720;border:1px solid #344151;color:var(--text);border-radius:10px;padding:11px 12px;font:inherit;outline:none}select:focus,input:focus{border-color:var(--teal)}
+.wrap{width:min(1080px,calc(100% - 32px));margin:0 auto;padding:26px 0 54px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:23px}.brand{display:flex;align-items:center;gap:12px}.mark{width:42px;height:42px;border:1px solid #397d79;border-radius:13px;display:grid;place-items:center;color:var(--teal);font-size:22px;background:#142b2c}.brand strong{letter-spacing:.18em;font-size:18px}.brand small{display:block;color:var(--muted);letter-spacing:.08em;font-size:10px;text-transform:uppercase}.pill{border:1px solid var(--line);border-radius:99px;padding:6px 11px;color:var(--muted);font-size:12px}
+h1{font-size:clamp(27px,5vw,40px);line-height:1.08;letter-spacing:-.04em;margin:0 0 8px}.intro{color:var(--muted);margin:0 0 22px}
+.main{display:grid;grid-template-columns: minmax(330px,.88fr) minmax(400px,1.12fr);gap:16px;align-items:stretch}.panel{background:linear-gradient(145deg,#1b232d,#161c24);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 12px 36px #0002}.panel h2{font-size:13px;text-transform:uppercase;letter-spacing:.13em;color:#b7c5d2;margin:0 0 15px}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field.full{grid-column:1/-1}label{font-size:12px;color:var(--muted)}select,input[type=number]{width:100%;background:#111720;border:1px solid #344151;color:var(--text);border-radius:10px;padding:11px 12px;font:inherit;outline:none}select:focus,input:focus{border-color:var(--teal)}
 button{border:0;border-radius:10px;background:var(--teal);color:#08211f;font-weight:750;padding:11px 16px;cursor:pointer;font:inherit}button.secondary{background:#273441;color:var(--text);border:1px solid #3a4857}button:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
 .status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;margin-top:12px}.dot{width:8px;height:8px;border-radius:50%;background:#687584}.dot.live{background:var(--green);box-shadow:0 0 12px #8ee0a188}
-.tuner{min-height:350px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}.tuner:before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:#54d6c408;filter:blur(25px)}
-.note{font-size:clamp(64px,11vw,104px);font-weight:750;letter-spacing:-.07em;line-height:1;z-index:1}.frequency{font-size:18px;color:var(--teal);font-variant-numeric:tabular-nums;margin-top:7px;z-index:1}.notehint{color:var(--muted);font-size:12px;margin-top:3px;z-index:1}
-.meter{width:min(100%,420px);margin:27px auto 0;z-index:1}.scale{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-bottom:8px}.track{height:12px;background:linear-gradient(90deg,#b85b5b 0%,#c9a65e 30%,#5d6974 48%,#5d6974 52%,#c9a65e 70%,#b85b5b 100%);border-radius:20px;position:relative}.centerline{position:absolute;left:50%;top:-5px;height:22px;width:2px;background:#fff9}.needle{position:absolute;left:50%;top:-8px;width:4px;height:28px;border-radius:5px;background:#fff;transform:translateX(-50%);box-shadow:0 0 10px #fff9;transition:left .08s linear}.cents{font-size:13px;color:var(--muted);margin-top:12px;font-variant-numeric:tabular-nums}
-.stringrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.string{flex:1;min-width:52px;background:#111720;border:1px solid var(--line);border-radius:10px;padding:9px 5px;text-align:center;color:var(--muted);font-size:12px}.string b{display:block;color:var(--text);font-size:17px}.string.active{border-color:var(--teal);background:#17302f;color:var(--teal)}
-.help{margin-top:16px}.help p{color:var(--muted);font-size:13px;margin:8px 0}.help strong{color:var(--text)}.help ul{padding-left:18px;color:var(--muted);font-size:13px;margin:8px 0}.help li{margin:5px 0}
-.footer{margin-top:24px;text-align:center;color:#738191;font-size:12px}.tag{display:inline-block;color:var(--teal);border:1px solid #28514e;border-radius:6px;padding:2px 7px;font-size:10px;letter-spacing:.08em;margin-left:6px}
-@media(max-width:760px){.grid{grid-template-columns:1fr}.tuner{min-height:310px}.controls{grid-template-columns:1fr 1fr}.panel{padding:16px}}
-@media(max-width:420px){.controls{grid-template-columns:1fr}.field.full{grid-column:auto}.wrap{width:calc(100% - 22px);padding-top:17px}}
+.tuner{min-height:430px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}.tuner:before{content:"";position:absolute;width:340px;height:340px;border-radius:50%;background:#54d6c408;filter:blur(25px)}
+.biglabel{z-index:1;color:var(--muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:9px}.note{font-size:clamp(76px,11vw,116px);font-weight:760;letter-spacing:-.08em;line-height:.95;z-index:1}.frequency{font-size:20px;color:var(--teal);font-variant-numeric:tabular-nums;margin-top:12px;z-index:1}.notehint{color:var(--muted);font-size:12px;margin-top:4px;z-index:1}
+.meter{width:min(100%,470px);margin:31px auto 0;z-index:1}.scale{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-bottom:8px}.track{height:12px;background:linear-gradient(90deg,#b85b5b 0%,#c9a65e 30%,#5d6974 48%,#5d6974 52%,#c9a65e 70%,#b85b5b 100%);border-radius:20px;position:relative}.centerline{position:absolute;left:50%;top:-5px;height:22px;width:2px;background:#fff9}.needle{position:absolute;left:50%;top:-8px;width:4px;height:28px;border-radius:5px;background:#fff;transform:translateX(-50%);box-shadow:0 0 10px #fff9;transition:left .08s linear}.cents{font-size:13px;color:var(--muted);margin-top:12px;font-variant-numeric:tabular-nums}
+.readouts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:20px;z-index:1}.readout{background:#111720;border:1px solid var(--line);border-radius:10px;padding:8px 12px;min-width:94px}.readout small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.1em}.readout b{font-size:14px;font-variant-numeric:tabular-nums}
+.strings{display:flex;gap:7px;flex-wrap:wrap;margin-top:17px;z-index:1;width:100%;justify-content:center}.string{flex:1;min-width:48px;max-width:78px;background:#111720;border:1px solid var(--line);border-radius:10px;padding:8px 4px;text-align:center;color:var(--muted);font-size:11px}.string b{display:block;color:var(--text);font-size:16px}.string.active{border-color:var(--teal);background:#17302f;color:var(--teal)}
+.presetnote{color:var(--muted);font-size:11px;margin-top:9px;z-index:1}.advanced{margin-top:12px;border-top:1px solid var(--line);padding-top:13px}.advanced summary{color:#c7d3dd;font-size:12px;cursor:pointer;letter-spacing:.04em}.advanced .controls{margin-top:12px}
+.help{margin-top:20px}.helpgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.help h3{font-size:14px;margin:0 0 7px}.help p,.help li{color:var(--muted);font-size:13px}.help p{margin:6px 0}.help ul{padding-left:18px;margin:7px 0}.help li{margin:5px 0}.footer{margin-top:24px;text-align:center;color:#738191;font-size:12px}.tag{display:inline-block;color:var(--teal);border:1px solid #28514e;border-radius:6px;padding:2px 7px;font-size:10px;letter-spacing:.08em;margin-left:6px}
+@media(max-width:820px){.main{grid-template-columns:1fr}.tuner{min-height:390px}.helpgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.controls{grid-template-columns:1fr 1fr}.helpgrid{grid-template-columns:1fr}.panel{padding:16px}.wrap{width:calc(100% - 22px);padding-top:17px}.tuner{min-height:360px}}
+@media(max-width:390px){.controls{grid-template-columns:1fr}.field.full{grid-column:auto}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header><div class="brand"><div class="mark">♩</div><div><strong>SARIMOKO</strong><small>tools for making things</small></div></div><span class="pill">TUNE <span class="tag">BETA</span></span></header>
-<h1>Find your pitch.</h1><p class="intro">A clean, browser-based instrument tuner. Choose your input, pick a tuning, and bring the needle to center.</p>
-<div class="grid">
+<header><div class="brand"><div class="mark">♩</div><div><strong>SARIMOKO</strong><small>tools for making things</small></div></div><span class="pill">TUNE <span class="tag">ADVANCED BETA</span></span></header>
+<h1>Find your pitch.</h1><p class="intro">A precision chromatic tuner for instruments, alternate tunings and creative exploration.</p>
+
+<div class="main">
 <section class="panel">
-<h2>Input & tuning</h2>
+<h2>Input & tuning setup</h2>
 <div class="controls">
-<div class="field full"><label for="device">Audio input</label><select id="device"><option value="">Default microphone</option></select></div>
-<div class="field"><label for="layout">Tuning layout</label><select id="layout"><option value="chromatic">Chromatic</option><option value="guitar">Guitar · Standard</option><option value="bass">Bass · 4-string</option><option value="uke">Ukulele · Standard</option></select></div>
-<div class="field"><label for="reference">Reference pitch (A4)</label><div style="display:flex;gap:7px"><input id="reference" type="number" min="300" max="500" step="0.1" value="440"><span style="align-self:center;color:var(--muted)">Hz</span></div></div>
-<div class="field full" id="customWrap" hidden><label for="custom">Custom reference (Hz)</label><input id="custom" type="number" min="300" max="500" step="0.1" value="440"></div>
+ <div class="field full"><label for="device">Audio input / driver</label><select id="device"><option value="">Default microphone</option></select></div>
+ <div class="field"><label for="family">Instrument family</label><select id="family"><option value="chromatic">Chromatic</option><option value="guitar6">6-string guitar</option><option value="guitar7">7-string guitar</option><option value="guitar8">8-string guitar</option><option value="bass4">4-string bass</option><option value="bass5">5-string bass</option><option value="bass6">6-string bass</option><option value="uke">Ukulele</option></select></div>
+ <div class="field"><label for="tuning">Tuning preset</label><select id="tuning"></select></div>
+ <div class="field"><label for="reference">Concert pitch · A4</label><input id="reference" type="number" min="300" max="500" step="0.1" value="440"></div>
+ <div class="field"><label for="tolerance">In-tune tolerance</label><select id="tolerance"><option value="1">±1 cent · strict</option><option value="3">±3 cents</option><option value="5" selected>±5 cents · standard</option><option value="10">±10 cents · relaxed</option></select></div>
 </div>
 <div class="actions"><button id="start">Start tuner</button><button id="stop" class="secondary" disabled>Stop</button><button id="refresh" class="secondary">Refresh inputs</button></div>
 <div class="status"><span id="dot" class="dot"></span><span id="status">Waiting for microphone permission.</span></div>
-<div class="help">
-<h2 style="margin-top:20px">Which audio input should I use?</h2>
-<p><strong>Built-in microphone</strong> — easiest option. Select your MacBook, laptop, or phone microphone. Place the instrument reasonably close and reduce background noise.</p>
-<p><strong>USB audio interface</strong> — best for electric guitar or bass. Connect the instrument to the interface's instrument/Hi-Z input, select the interface here, and set its input gain so the signal is healthy without clipping.</p>
-<ul><li>For acoustic instruments, use the built-in mic or an external microphone.</li><li>For an electric instrument, use a direct interface input; do not select system output or a speaker loopback.</li><li>Allow microphone access when your browser asks. Headphones help prevent speaker feedback.</li></ul>
-<p>On macOS, check <strong>System Settings → Privacy & Security → Microphone</strong> if the browser cannot access an input. On Windows, check <strong>Settings → Privacy & security → Microphone</strong>.</p>
-</div>
+<details class="advanced">
+ <summary>Advanced calibration & detection</summary>
+ <div class="controls">
+  <div class="field"><label for="minHz">Lowest frequency (Hz)</label><input id="minHz" type="number" min="15" max="200" value="25"></div>
+  <div class="field"><label for="maxHz">Highest frequency (Hz)</label><input id="maxHz" type="number" min="300" max="2000" value="1200"></div>
+  <div class="field"><label for="sensitivity">Input sensitivity</label><select id="sensitivity"><option value="0.006">High</option><option value="0.012" selected>Normal</option><option value="0.025">Low / noisy room</option></select></div>
+  <div class="field"><label for="displayMode">Tuner display</label><select id="displayMode"><option value="needle">Needle</option><option value="strobe">Strobe-style</option></select></div>
+ </div>
+ <p style="color:var(--muted);font-size:12px;margin:10px 0 0">Concert pitch changes the reference used to calculate every target note. Lower-frequency detection may need a longer, sustained note and a quiet environment.</p>
+</details>
 </section>
+
 <section class="panel tuner">
-<div class="note" id="note">—</div><div class="frequency" id="freq">--.- Hz</div><div class="notehint" id="hint">Play a single note</div>
-<div class="meter"><div class="scale"><span>♭ Flat</span><span>In tune</span><span>Sharp ♯</span></div><div class="track"><div class="centerline"></div><div class="needle" id="needle"></div></div><div class="cents" id="cents">0 cents</div></div>
-<div class="stringrow" id="strings"></div>
+<div class="biglabel" id="targetLabel">CHROMATIC · AUTO NOTE</div>
+<div class="note" id="note">—</div><div class="frequency" id="freq">--.- Hz</div><div class="notehint" id="hint">Play a single sustained note</div>
+<div class="meter"><div class="scale"><span>♭ Flat</span><span>In tune</span><span>Sharp ♯</span></div><div class="track"><div class="centerline"></div><div class="needle" id="needle"></div></div><div class="cents" id="cents">0.0 cents</div></div>
+<div class="readouts">
+ <div class="readout"><small>Target</small><b id="targetHz">— Hz</b></div>
+ <div class="readout"><small>Deviation</small><b id="deviation">— cents</b></div>
+ <div class="readout"><small>Signal</small><b id="signal">—</b></div>
+</div>
+<div class="strings" id="strings"></div><div class="presetnote" id="presetnote">Select an instrument to see its string targets.</div>
 </section>
 </div>
-<div class="footer">TUNE is a Sarimoko browser tool · Audio is processed locally in your browser.</div>
+
+<section class="panel help">
+<h2>Audio setup, tuning guide & FAQ</h2>
+<div class="helpgrid">
+ <div><h3>Choose your audio input</h3>
+  <p><strong style="color:var(--text)">Built-in microphone:</strong> simplest for acoustic guitar, ukulele and room tuning. Put the mic near the instrument and reduce background noise.</p>
+  <p><strong style="color:var(--text)">USB audio interface:</strong> recommended for electric guitar and bass. Connect to an instrument / Hi-Z input, select the interface above, and set a clean input gain.</p>
+ </div>
+ <div><h3>Driver & browser permissions</h3>
+  <ul><li>On macOS, select the interface in the browser input list. Install the manufacturer's driver/control app if the device requires one; many class-compliant interfaces work without a separate driver.</li><li>On Windows, install the manufacturer's ASIO driver for DAW use. Browser microphone access generally uses the system audio driver, not a selectable ASIO driver.</li><li>Allow microphone access for this site. GitHub Pages uses HTTPS, which is required for microphone capture.</li></ul>
+ </div>
+ <div><h3>Getting the best reading</h3>
+  <ul><li>Mute other instruments and play one string at a time.</li><li>Use a clean, sustained note; pluck firmly, then let the note settle.</li><li>For bass, give the tuner a moment to detect the low fundamental.</li><li>For electric instruments, direct interface input usually gives the cleanest result.</li></ul>
+ </div>
+</div>
+</section>
+<div class="footer">TUNE by Sarimoko · Real-time audio analysis runs locally in your browser. No audio is uploaded.</div>
 </div>
 <script>
 (() => {
 const $ = id => document.getElementById(id);
+const noteNames=["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
 const presets = {
-  chromatic: [],
-  guitar: [{name:"E2",midi:40},{name:"A2",midi:45},{name:"D3",midi:50},{name:"G3",midi:55},{name:"B3",midi:59},{name:"E4",midi:64}],
-  bass: [{name:"E1",midi:28},{name:"A1",midi:33},{name:"D2",midi:38},{name:"G2",midi:43}],
-  uke: [{name:"G4",midi:67},{name:"C4",midi:60},{name:"E4",midi:64},{name:"A4",midi:69}]
+ chromatic:[{id:"chromatic",label:"Chromatic · all notes",notes:[]}],
+ guitar6:[
+  {id:"standard",label:"Standard · E A D G B E",notes:["E2","A2","D3","G3","B3","E4"]},
+  {id:"dropd",label:"Drop D · D A D G B E",notes:["D2","A2","D3","G3","B3","E4"]},
+  {id:"dropc",label:"Drop C · C G C F A D",notes:["C2","G2","C3","F3","A3","D4"]},
+  {id:"halfdown",label:"Half-step down · Eb Ab Db Gb Bb Eb",notes:["D♯2","G♯2","C♯3","F♯3","A♯3","D♯4"]},
+  {id:"openg",label:"Open G · D G D G B D",notes:["D2","G2","D3","G3","B3","D4"]},
+  {id:"opend",label:"Open D · D A D F# A D",notes:["D2","A2","D3","F♯3","A3","D4"]},
+  {id:"dadgad",label:"DADGAD · D A D G A D",notes:["D2","A2","D3","G3","A3","D4"]},
+  {id:"opene",label:"Open E · E B E G# B E",notes:["E2","B2","E3","G♯3","B3","E4"]}
+ ],
+ guitar7:[
+  {id:"standard",label:"Standard 7 · B E A D G B E",notes:["B1","E2","A2","D3","G3","B3","E4"]},
+  {id:"dropa",label:"Drop A · A E A D G B E",notes:["A1","E2","A2","D3","G3","B3","E4"]},
+  {id:"dropg",label:"Drop G · G D G C F A D",notes:["G1","D2","G2","C3","F3","A3","D4"]},
+  {id:"halfdown",label:"Half-step down",notes:["A♯1","D♯2","G♯2","C♯3","F♯3","A♯3","D♯4"]}
+ ],
+ guitar8:[
+  {id:"standard",label:"Standard 8 · F# B E A D G B E",notes:["F♯1","B1","E2","A2","D3","G3","B3","E4"]},
+  {id:"drope",label:"Drop E · E B E A D G B E",notes:["E1","B1","E2","A2","D3","G3","B3","E4"]},
+  {id:"dropd",label:"Drop D · D A D G C F A D",notes:["D1","A1","D2","G2","C3","F3","A3","D4"]}
+ ],
+ bass4:[
+  {id:"standard",label:"Standard · E A D G",notes:["E1","A1","D2","G2"]},
+  {id:"dropd",label:"Drop D · D A D G",notes:["D1","A1","D2","G2"]},
+  {id:"dropc",label:"Drop C · C G C F",notes:["C1","G1","C2","F2"]},
+  {id:"halfdown",label:"Half-step down",notes:["D♯1","G♯1","C♯2","F♯2"]}
+ ],
+ bass5:[
+  {id:"standard",label:"Standard · B E A D G",notes:["B0","E1","A1","D2","G2"]},
+  {id:"dropa",label:"Drop A · A E A D G",notes:["A0","E1","A1","D2","G2"]},
+  {id:"highc",label:"High C · E A D G C",notes:["E1","A1","D2","G2","C3"]}
+ ],
+ bass6:[
+  {id:"standard",label:"Standard · B E A D G C",notes:["B0","E1","A1","D2","G2","C3"]},
+  {id:"dropa",label:"Drop A · A E A D G C",notes:["A0","E1","A1","D2","G2","C3"]},
+  {id:"lowa",label:"Low A · A E A D G C",notes:["A0","E1","A1","D2","G2","C3"]}
+ ],
+ uke:[
+  {id:"standard",label:"Standard re-entrant · G C E A",notes:["G4","C4","E4","A4"]},
+  {id:"lowg",label:"Low G · G3 C4 E4 A4",notes:["G3","C4","E4","A4"]},
+  {id:"baritone",label:"Baritone · D G B E",notes:["D3","G3","B3","E4"]}
+ ]
 };
-let audioContext=null,stream=null,source=null,analyser=null,raf=null,buffer=null,devices=[];
-const names=["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
-function currentRef(){return Math.max(300,Math.min(500,Number($("reference").value)||440))}
-function midiFreq(midi){return currentRef()*Math.pow(2,(midi-69)/12)}
-function renderStrings(){
- const arr=presets[$("layout").value]; $("strings").innerHTML="";
- if(!arr.length)return;
- arr.forEach(s=>{const el=document.createElement("div");el.className="string";el.innerHTML=`<b>${s.name}</b>${midiFreq(s.midi).toFixed(1)} Hz`;$("strings").appendChild(el)});
+let audioContext=null,stream=null,analyser=null,raf=null,buffer=null;
+function ref(){return Math.max(300,Math.min(500,Number($("reference").value)||440))}
+function noteToMidi(note){
+ const m=note.match(/^([A-G])([#♯b♭]?)(-?\d+)$/);if(!m)return null;
+ let n={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[m[1]];
+ if(m[2]==="#"||m[2]==="♯")n++;if(m[2]==="b"||m[2]==="♭")n--;
+ return (Number(m[3])+1)*12+n;
 }
-function setStatus(text,live=false){$("status").textContent=text;$("dot").classList.toggle("live",live)}
+function midiToFreq(m){return ref()*Math.pow(2,(m-69)/12)}
+function familyPresets(){return presets[$("family").value]||presets.chromatic}
+function selectedPreset(){return familyPresets().find(p=>p.id===$("tuning").value)||familyPresets()[0]}
+function renderTuningOptions(){
+ const list=familyPresets(),sel=$("tuning"),previous=sel.value;sel.innerHTML="";
+ list.forEach(p=>{const o=document.createElement("option");o.value=p.id;o.textContent=p.label;sel.appendChild(o)});
+ if(list.some(p=>p.id===previous))sel.value=previous;else sel.value=list[0].id;
+ renderStrings();
+}
+function renderStrings(){
+ const p=selectedPreset(),box=$("strings");box.innerHTML="";
+ $("targetLabel").textContent=$("family").selectedOptions[0].textContent.toUpperCase()+" · "+p.label.split(" · ")[0].toUpperCase();
+ if(!p.notes.length){$("presetnote").textContent="Chromatic mode: detects any note; no fixed string targets.";return}
+ p.notes.forEach((n,i)=>{const m=noteToMidi(n),el=document.createElement("div");el.className="string";el.dataset.midi=m;el.innerHTML=`<b>${n}</b>${midiToFreq(m).toFixed(1)} Hz`;box.appendChild(el)});
+ $("presetnote").textContent="String targets are shown low to high. Select a preset to change the target notes.";
+}
+function setStatus(t,live=false){$("status").textContent=t;$("dot").classList.toggle("live",live)}
 async function refreshDevices(){
  try{
-  const all=await navigator.mediaDevices.enumerateDevices();devices=all.filter(d=>d.kind==="audioinput");
-  const sel=$("device"),old=sel.value;sel.innerHTML="";
-  const def=document.createElement("option");def.value="";def.textContent="Default microphone";sel.appendChild(def);
-  devices.forEach((d,i)=>{const o=document.createElement("option");o.value=d.deviceId;o.textContent=d.label||`Audio input ${i+1}`;sel.appendChild(o)});
-  if(devices.some(d=>d.deviceId===old))sel.value=old;
-  if(!devices.length)setStatus("No audio inputs detected.");
- }catch(e){setStatus("Could not list audio inputs. Check browser permissions.");}
+  const all=await navigator.mediaDevices.enumerateDevices(),inputs=all.filter(d=>d.kind==="audioinput"),sel=$("device"),old=sel.value;sel.innerHTML="";
+  const def=document.createElement("option");def.value="";def.textContent="System default input";sel.appendChild(def);
+  inputs.forEach((d,i)=>{const o=document.createElement("option");o.value=d.deviceId;o.textContent=d.label||`Audio input ${i+1}`;sel.appendChild(o)});
+  if(inputs.some(d=>d.deviceId===old))sel.value=old;
+ }catch(e){setStatus("Input list unavailable. Start the tuner to grant microphone permission.");}
 }
 function stop(){
- if(raf)cancelAnimationFrame(raf);raf=null;
- if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;
- if(audioContext){audioContext.close();audioContext=null}
- source=analyser=buffer=null;$("start").disabled=false;$("stop").disabled=true;
- $("note").textContent="—";$("freq").textContent="--.- Hz";$("hint").textContent="Play a single note";$("cents").textContent="0 cents";$("needle").style.left="50%";setStatus("Tuner stopped.");
+ if(raf)cancelAnimationFrame(raf);raf=null;if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;
+ if(audioContext){audioContext.close();audioContext=null}analyser=buffer=null;
+ $("start").disabled=false;$("stop").disabled=true;$("note").textContent="—";$("freq").textContent="--.- Hz";$("hint").textContent="Play a single sustained note";
+ $("cents").textContent="0.0 cents";$("needle").style.left="50%";$("targetHz").textContent="— Hz";$("deviation").textContent="— cents";$("signal").textContent="—";
+ document.querySelectorAll(".string").forEach(x=>x.classList.remove("active"));setStatus("Tuner stopped.");
 }
 async function start(){
- stop();
- if(!navigator.mediaDevices?.getUserMedia){setStatus("Microphone access requires HTTPS or localhost.");return}
+ stop();if(!navigator.mediaDevices?.getUserMedia){setStatus("Microphone access requires HTTPS or localhost.");return}
  try{
-  const constraints={audio:{deviceId:$("device").value?{exact:$("device").value}:undefined,echoCancellation:false,noiseSuppression:false,autoGainControl:false}};
-  stream=await navigator.mediaDevices.getUserMedia(constraints);
-  await refreshDevices();
-  audioContext=new (window.AudioContext||window.webkitAudioContext)();
-  if(audioContext.state==="suspended")await audioContext.resume();
-  source=audioContext.createMediaStreamSource(stream);analyser=audioContext.createAnalyser();analyser.fftSize=8192;analyser.smoothingTimeConstant=0;
-  source.connect(analyser);buffer=new Float32Array(analyser.fftSize);
-  $("start").disabled=true;$("stop").disabled=false;setStatus("Listening — play one note at a time.",true);loop();
+  const audio={echoCancellation:false,noiseSuppression:false,autoGainControl:false};
+  if($("device").value)audio.deviceId={exact:$("device").value};
+  stream=await navigator.mediaDevices.getUserMedia({audio});
+  await refreshDevices();audioContext=new(window.AudioContext||window.webkitAudioContext)();if(audioContext.state==="suspended")await audioContext.resume();
+  const src=audioContext.createMediaStreamSource(stream);analyser=audioContext.createAnalyser();analyser.fftSize=16384;analyser.smoothingTimeConstant=0;src.connect(analyser);buffer=new Float32Array(analyser.fftSize);
+  $("start").disabled=true;$("stop").disabled=false;setStatus("Listening · play one string at a time.",true);loop();
  }catch(e){stop();setStatus(e.name==="NotAllowedError"?"Microphone permission denied. Allow access in browser settings.":`Could not start audio: ${e.message}`)}
 }
-function autoCorrelate(buf,sr){
+function detectPitch(buf,sr){
  let rms=0;for(let i=0;i<buf.length;i++)rms+=buf[i]*buf[i];rms=Math.sqrt(rms/buf.length);
- if(rms<0.012)return -1;
- let r1=0,r2=buf.length-1,thres=0.2;
- for(let i=0;i<buf.length/2;i++){if(Math.abs(buf[i])<thres){r1=i;break}}
- for(let i=1;i<buf.length/2;i++){if(Math.abs(buf[buf.length-i])<thres){r2=buf.length-i;break}}
- const slice=buf.slice(r1,r2);const c=new Float32Array(slice.length);
- for(let lag=0;lag<c.length;lag++){let sum=0;for(let i=0;i<c.length-lag;i++)sum+=slice[i]*slice[i+lag];c[lag]=sum}
+ $("signal").textContent=(20*Math.log10(Math.max(rms,1e-7))).toFixed(0)+" dBFS";
+ if(rms<Number($("sensitivity").value))return -1;
+ let r1=0,r2=buf.length-1,threshold=.2;
+ for(let i=0;i<buf.length/2;i++){if(Math.abs(buf[i])<threshold){r1=i;break}}
+ for(let i=1;i<buf.length/2;i++){if(Math.abs(buf[buf.length-i])<threshold){r2=buf.length-i;break}}
+ const s=buf.slice(r1,r2),c=new Float32Array(s.length);
+ for(let lag=0;lag<c.length;lag++){let sum=0;for(let i=0;i<c.length-lag;i++)sum+=s[i]*s[i+lag];c[lag]=sum}
  let d=0;while(d+1<c.length&&c[d]>c[d+1])d++;
  let max=-1,period=-1;for(let i=d;i<c.length;i++){if(c[i]>max){max=c[i];period=i}}
  if(period<2)return -1;
- let x1=c[period-1],x2=c[period],x3=c[period+1];
- let a=(x1+x3-2*x2)/2,b=(x3-x1)/2;
- if(a)period-=b/(2*a);
- const hz=sr/period;return hz>25&&hz<1500?hz:-1;
+ const a=c[period-1],b=c[period],z=c[period+1],den=a-2*b+z;
+ if(den!==0)period+=.5*(a-z)/den;
+ const hz=sr/period,min=Number($("minHz").value)||25,maxHz=Number($("maxHz").value)||1200;
+ return hz>=min&&hz<=maxHz?hz:-1;
 }
 function loop(){
- analyser.getFloatTimeDomainData(buffer);const hz=autoCorrelate(buffer,audioContext.sampleRate);
+ analyser.getFloatTimeDomainData(buffer);const hz=detectPitch(buffer,audioContext.sampleRate);
  if(hz>0)showPitch(hz);else{$("hint").textContent="Listening… play a clear, sustained note";$("freq").textContent="--.- Hz"}
  raf=requestAnimationFrame(loop);
 }
 function showPitch(hz){
- const midiFloat=69+12*Math.log2(hz/currentRef()),midi=Math.round(midiFloat),cents=(midiFloat-midi)*100;
- const note=names[(midi%12+12)%12]+(Math.floor(midi/12)-1);
- const target=midiFreq(midi),delta=1200*Math.log2(hz/target);
- $("note").textContent=note;$("freq").textContent=hz.toFixed(1)+" Hz";
- $("hint").textContent=Math.abs(cents)<5?"In tune":cents<0?"Tune up":"Tune down";
+ const midiFloat=69+12*Math.log2(hz/ref()),midi=Math.round(midiFloat),cents=(midiFloat-midi)*100;
+ const name=noteNames[(midi%12+12)%12]+(Math.floor(midi/12)-1),target=midiToFreq(midi),delta=1200*Math.log2(hz/target),tol=Number($("tolerance").value);
+ $("note").textContent=name;$("freq").textContent=hz.toFixed(2)+" Hz";$("targetHz").textContent=target.toFixed(2)+" Hz";
+ $("deviation").textContent=(cents>0?"+":"")+cents.toFixed(1)+" cents";
+ $("hint").textContent=Math.abs(cents)<=tol?"IN TUNE":cents<0?"Tune up · flat":"Tune down · sharp";
+ $("hint").style.color=Math.abs(cents)<=tol?"var(--green)":"var(--muted)";
  $("cents").textContent=(cents>0?"+":"")+cents.toFixed(1)+" cents";
- $("needle").style.left=(50+Math.max(-50,Math.min(50,cents))*0.9)+"%";
- const arr=presets[$("layout").value];
- document.querySelectorAll(".string").forEach((el,i)=>el.classList.toggle("active",arr[i]&&arr[i].midi===midi));
+ const pos=50+Math.max(-50,Math.min(50,cents))*0.9;$("needle").style.left=pos+"%";
+ $("needle").style.background=Math.abs(cents)<=tol?"var(--green)":"#fff";
+ if($("displayMode").value==="strobe")$("needle").style.width="7px";else $("needle").style.width="4px";
+ document.querySelectorAll(".string").forEach(el=>el.classList.toggle("active",Number(el.dataset.midi)===midi));
 }
-$("start").addEventListener("click",start);$("stop").addEventListener("click",stop);
-$("refresh").addEventListener("click",refreshDevices);
-$("layout").addEventListener("change",renderStrings);
-$("reference").addEventListener("input",()=>{renderStrings()});
-$("device").addEventListener("change",()=>{if(stream)start()});
-$("custom").addEventListener("input",()=>{$("reference").value=$("custom").value;renderStrings()});
-renderStrings();refreshDevices();
+$("start").addEventListener("click",start);$("stop").addEventListener("click",stop);$("refresh").addEventListener("click",refreshDevices);
+$("family").addEventListener("change",renderTuningOptions);$("tuning").addEventListener("change",renderStrings);
+$("reference").addEventListener("input",renderStrings);$("device").addEventListener("change",()=>{if(stream)start()});
+$("tolerance").addEventListener("change",()=>{});$("displayMode").addEventListener("change",()=>{if($("displayMode").value==="needle")$("needle").style.width="4px"});
+renderTuningOptions();refreshDevices();
 if(location.protocol!=="https:"&&location.hostname!=="localhost"&&location.hostname!=="127.0.0.1")setStatus("Ready. GitHub Pages provides secure HTTPS microphone access.");
 })();
 </script>
